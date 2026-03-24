@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Europa Wardrobe">
+<meta name="theme-color" content="#1a1915">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231a1915'/><text y='.9em' font-size='80' x='10'>🧳</text></svg>">
+<link rel="manifest" href="data:application/manifest+json,{
+  &quot;name&quot;: &quot;Europa Wardrobe System&quot;,
+  &quot;short_name&quot;: &quot;Wardrobe&quot;,
+  &quot;start_url&quot;: &quot;.&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#1a1915&quot;,
+  &quot;theme_color&quot;: &quot;#1a1915&quot;,
+  &quot;icons&quot;: [{&quot;src&quot;: &quot;data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231a1915'/><text y='.9em' font-size='80' x='10'>🧳</text></svg>&quot;, &quot;sizes&quot;: &quot;any&quot;, &quot;type&quot;: &quot;image/svg+xml&quot;}]
+}">
+
+<title>Europa Wardrobe System</title>
+
+<style>
+  :root {
+    --ink: #1a1915;
+    --ink-2: #3a3830;
+    --ink-3: #7a7668;
+    --ink-4: #b5b0a2;
+    --paper: #f7f4ee;
+    --paper-2: #efe9df;
+    --paper-3: #e3dcd0;
+    --accent: #2A3A6B;
+    --accent-2: #4a6e9e;
+    --green: #2d5a3d;
+    --green-2: #e8f2ec;
+    --amber: #8a4f10;
+    --amber-2: #fdf0e0;
+    --red: #7a1f1f;
+    --red-2: #fceaea;
+    --border: rgba(26,25,21,0.12);
+    --radius: 6px;
+    --radius-lg: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: calc(28px + env(safe-area-inset-top, 0px)) 32px 24px;
+    position: sticky;
+    top: env(safe-area-inset-top, 0);
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .header-title {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+  }
+  .header-sub {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: rgba(247,244,238,0.5);
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .header-stats {
+    display: flex;
+    gap: 20px;
+  }
+  .hstat {
+    text-align: right;
+  }
+  .hstat-num {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    color: var(--paper);
+    line-height: 1;
+  }
+  .hstat-label {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: rgba(247,244,238,0.45);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    position: sticky;
+    top: calc(89px + env(safe-area-inset-top));
+    z-index: 90;
+  }
+  .tabs-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+  }
+  .tab-btn {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 13px 16px;
+    border: none;
+    background: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--paper-2); }
+  th {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 10px 12px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--ink-2);
+    border-bottom: 1px solid rgba(26,25,21,0.06);
+    vertical-align: middle;
+    line-height: 1.5;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(26,25,21,0.025); }
+
+  .cell-id {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .cell-brand {
+    font-size: 10px;
+    color: var(--ink-4);
+    display: block;
+    font-family: 'Courier New', monospace;
+  }
+  .cell-name { font-weight: 500; color: var(--ink); font-size: 12px; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .b-go { background: var(--green-2); color: var(--green); }
+  .b-warn { background: var(--amber-2); color: var(--amber); }
+  .b-no { background: var(--red-2); color: var(--red); }
+  .b-blue { background: #e6eef8; color: #1a3a6a; }
+  .b-purple { background: #efedfd; color: #3c3489; }
+  .b-grey { background: var(--paper-2); color: var(--ink-3); border: 1px solid var(--border); }
+
+  .cdot {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.15);
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .callout-go { background: var(--green-2); color: #0d3d24; border-left: 3px solid #4aad74; }
+  .callout-warn { background: var(--amber-2); color: #5a3000; border-left: 3px solid #e89a3c; }
+  .callout-info { background: var(--paper-2); color: var(--ink-2); border-left: 3px solid var(--ink-4); }
+  .callout strong { font-weight: 600; }
+
+  /* ── GRID 2 COL ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ── STAT CARDS ── */
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 24px; }
+  @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+  .stat-card {
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-lbl {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-top: 4px;
+  }
+
+  /* ── CALENDAR GRID ── */
+  .city-block { margin-bottom: 32px; }
+  .city-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .city-flag { font-size: 20px; }
+  .city-name {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: 400;
+  }
+  .city-dates {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.08em;
+  }
+  .city-style-note {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-style: italic;
+    margin-left: auto;
+    max-width: 260px;
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  .day-cards { display: flex; flex-direction: column; gap: 8px; }
+  .day-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+  }
+  .day-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .day-card-head {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 12px;
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--border);
+  }
+  .day-num {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: var(--ink);
+    min-width: 28px;
+    line-height: 1;
+  }
+  .day-date {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.06em;
+  }
+  .day-scenario {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-left: 4px;
+  }
+  .day-temp {
+    margin-left: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+
+  .day-card-body {
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 600px) { .day-card-body { grid-template-columns: 1fr; } }
+
+  .outfit-section {}
+  .outfit-section-label {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 6px;
+  }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 4px; }
+  .pill {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--paper-2);
+    border: 1px solid var(--border);
+    color: var(--ink-2);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .pill-l1 { background: #e6f4ed; border-color: #9fd4b8; color: #1a5235; }
+  .pill-l2 { background: #efedfd; border-color: #afa9ec; color: #3c3489; }
+  .pill-l3 { background: #fdf0e0; border-color: #f0c070; color: #5a3000; }
+  .pill-acc { background: #f0eee8; border-color: #ccc8be; color: #4a4640; }
+  .pill-shoe { background: #e6eef8; border-color: #a5bde0; color: #1a3a6a; }
+
+  .day-note {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-style: italic;
+    padding-top: 8px;
+    border-top: 1px solid rgba(26,25,21,0.07);
+    line-height: 1.5;
+  }
+
+  .style-tip {
+    background: linear-gradient(135deg, #1a1915 0%, #2A3A6B 100%);
+    color: rgba(247,244,238,0.9);
+    border-radius: var(--radius);
+    padding: 6px 10px;
+    font-size: 10px;
+    margin-top: 4px;
+    line-height: 1.5;
+    font-style: normal;
+  }
+  .style-tip-label {
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 2px;
+  }
+
+  /* ── DB PANEL: COLOR SWATCH ── */
+  .swatch-row { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 0 4px; }
+  .swatch { 
+    display: flex; align-items: center; gap: 6px;
+    background: var(--paper-2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 10px 4px 6px;
+    font-size: 10px; color: var(--ink-2);
+    font-family: 'Courier New', monospace;
+  }
+  .swatch-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; }
+
+  /* ── MATRIX ── */
+  .matrix-table { font-size: 11px; }
+  .matrix-table th { font-size: 10px; text-align: center; }
+  .matrix-table .row-head { text-align: left; background: var(--paper-2); font-weight: 500; white-space: nowrap; }
+  .cell-ok { background: #e8f2ec; color: #1a5235; font-weight: 500; text-align: center; }
+  .cell-partial { background: #fdf0e0; color: #5a3000; text-align: center; }
+
+  /* ── EUROPE STYLE SECTION ── */
+  .style-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .style-city {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .style-desc {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .style-rules { display: flex; flex-direction: column; gap: 4px; }
+  .style-rule {
+    font-size: 11px;
+    color: var(--ink-3);
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .style-rule::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--ink-4);
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── PACKING CHECKLIST ── */
+  .pack-section {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .pack-section-head {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pack-section-title {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .pack-section-count {
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    opacity: 0.5;
+    margin-left: auto;
+  }
+  .pack-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(26,25,21,0.06);
+    font-size: 12px;
+  }
+  .pack-item:last-child { border-bottom: none; }
+  .pack-item-id {
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    min-width: 52px;
+  }
+  .pack-item-name { color: var(--ink-2); flex: 1; }
+  .pack-item-note { font-size: 10px; color: var(--ink-4); font-style: italic; }
+  .pack-star { color: #e89a3c; font-size: 12px; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Europa Wardrobe System</div>
+      <div class="header-sub">Berlín · Praga · Viena · Budapest · Londres — Mar–Abr 2025</div>
+    </div>
+    <div class="header-stats">
+      <div class="hstat"><div class="hstat-num">14</div><div class="hstat-label">Prendas</div></div>
+      <div class="hstat"><div class="hstat-num">28+</div><div class="hstat-label">Outfits</div></div>
+      <div class="hstat"><div class="hstat-num">14</div><div class="hstat-label">Días</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="showTab('db')">Base de datos</button>
+    <button class="tab-btn" onclick="showTab('calendar')">Plan día a día</button>
+    <button class="tab-btn" onclick="showTab('matrix')">Matriz</button>
+    <button class="tab-btn" onclick="showTab('style')">Estilo europeo</button>
+    <button class="tab-btn" onclick="showTab('packing')">Packing final</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 1: BASE DE DATOS
+═══════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-db">
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num">7</div><div class="stat-lbl">Tops / camisetas</div></div>
+    <div class="stat-card"><div class="stat-num">2</div><div class="stat-lbl">Camisas botones</div></div>
+    <div class="stat-card"><div class="stat-num">2</div><div class="stat-lbl">Pantalones</div></div>
+    <div class="stat-card"><div class="stat-num">4</div><div class="stat-lbl">Capas / outerwear</div></div>
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">Acces. + calzado</div></div>
+  </div>
+
+  <!-- TOPS -->
+  <div class="section-label">Tops y camisetas (7 prendas)</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>ID</th><th>Prenda</th><th>Color</th><th>Material</th><th>Formalidad</th><th>Función clave</th><th>Viaje</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="cell-id">TOP-04</td>
+        <td><span class="cell-brand">Kenneth Cole</span><span class="cell-name">Camiseta basic crema</span></td>
+        <td><span class="cdot" style="background:#F2EAD8;"></span>Crema/off-white</td>
+        <td>Algodón slim</td>
+        <td><span class="badge b-purple">Smart casual</span></td>
+        <td>Look europeo base, noche museos</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">TOP-05</td>
+        <td><span class="cell-brand">The North Face</span><span class="cell-name">Camiseta gráfica negra</span></td>
+        <td><span class="cdot" style="background:#2C2C2A;"></span>Negro/carbón</td>
+        <td>Algodón regular</td>
+        <td><span class="badge b-grey">Casual</span></td>
+        <td>Máxima versatilidad. Disimula suciedad.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">TOP-06</td>
+        <td><span class="cell-brand">DKNY</span><span class="cell-name">Camiseta basic greige</span></td>
+        <td><span class="cdot" style="background:#B8B09A;"></span>Beige/greige</td>
+        <td>Algodón premium slim</td>
+        <td><span class="badge b-purple">Smart casual</span></td>
+        <td>Neutro europeo por excelencia. Cenar directo.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">TOP-07</td>
+        <td><span class="cell-brand">Michael Kors</span><span class="cell-name">Polo knit negro</span></td>
+        <td><span class="cdot" style="background:#1C1C1A;"></span>Negro</td>
+        <td>Tejido punto regular-slim</td>
+        <td><span class="badge b-purple">Smart casual</span></td>
+        <td>Único collar = eleva cualquier outfit. MVP noche.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">TOP-08 <span class="pack-star">★</span></td>
+        <td><span class="cell-brand">Under Armour (posible)</span><span class="cell-name">Manga larga técnica sage</span></td>
+        <td><span class="cdot" style="background:#8A9A7A;"></span>Verde olivo/sage</td>
+        <td>Sintético / polyester stretch</td>
+        <td><span class="badge b-grey">Casual</span></td>
+        <td>Seca en 2–3h. Base imprescindible en lluvia.</td>
+        <td><span class="badge b-go">✓ MVP base</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">SHT-01 <span class="pack-star">★★</span></td>
+        <td><span class="cell-brand">Polo Ralph Lauren</span><span class="cell-name">Oxford BD blanca</span></td>
+        <td><span class="cdot" style="background:#F5F0E8;"></span>Blanco hueso</td>
+        <td>Algodón Oxford</td>
+        <td><span class="badge b-blue">Semi-formal</span></td>
+        <td>La prenda más formal del viaje. Viena / ópera.</td>
+        <td><span class="badge b-go">✓ Esencial noche</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">SHT-03 <span class="pack-star">★</span></td>
+        <td><span class="cell-brand">Levi's</span><span class="cell-name">Camisa rayas grises</span></td>
+        <td><span class="cdot" style="background:#A8A8A8;"></span>Gris/blanco rayas</td>
+        <td>Algodón Oxford</td>
+        <td><span class="badge b-purple">Smart casual</span></td>
+        <td>Smart casual perfecta. Como camisa exterior también.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- PANTALONES -->
+  <div class="section-label">Pantalones (2 prendas)</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>ID</th><th>Prenda</th><th>Color</th><th>Material / Fit</th><th>Clima</th><th>Función clave</th><th>Viaje</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="cell-id">PNT-03 <span class="pack-star">★★</span></td>
+        <td><span class="cell-brand">Eddie Bauer</span><span class="cell-name">Pantalón técnico azul</span></td>
+        <td><span class="cdot" style="background:#2A3A6B;"></span>Azul marino</td>
+        <td>Sintético repelente / slim</td>
+        <td><span class="badge b-blue">Lluvia ✓ Frío ✓</span></td>
+        <td>MVP absoluto. Técnico + semiformal. Viajar puesto.</td>
+        <td><span class="badge b-go">✓ MVP pantalón</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">PNT-02</td>
+        <td><span class="cell-brand">Sin marca</span><span class="cell-name">Jogger chino khaki</span></td>
+        <td><span class="cdot" style="background:#C4A97A;"></span>Khaki/beige</td>
+        <td>Algodón stretch tapered</td>
+        <td><span class="badge b-grey">Templado</span></td>
+        <td>Comodidad + cintura elástica días de caminata larga.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- CAPAS -->
+  <div class="section-label">Capas y outerwear (4 prendas)</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>ID</th><th>Prenda</th><th>Color</th><th>Tecnología</th><th>Lluvia</th><th>Función clave</th><th>Viaje</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="cell-id">OUT-03 <span class="pack-star">★★</span></td>
+        <td><span class="cell-brand">Sin marca</span><span class="cell-name">Impermeable Gore-Tex</span></td>
+        <td><span class="cdot" style="background:#C4B49A;"></span>Beige/sage bicolor</td>
+        <td>Gore-Tex membrana WP</td>
+        <td>✅✅ Waterproof</td>
+        <td>MVP absoluto. Lluvia total + viento. Siempre en mochila.</td>
+        <td><span class="badge b-go">✓ MVP lluvia</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">OUT-04 <span class="pack-star">★★</span></td>
+        <td><span class="cell-brand">Patagonia</span><span class="cell-name">Down Sweater</span></td>
+        <td><span class="cdot" style="background:#2E7DD1;"></span>Azul eléctrico</td>
+        <td>Pluma ganso / nylon ripstop</td>
+        <td>⚡ Leve</td>
+        <td>Ratio calor/peso insuperable. Comprime a bolsa pequeña.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">MID-02 <span class="pack-star">★</span></td>
+        <td><span class="cell-brand">Sin marca</span><span class="cell-name">Suéter tejido ribbed oatmeal</span></td>
+        <td><span class="cdot" style="background:#E8DFD0;"></span>Oatmeal/crema</td>
+        <td>Lana/acrílico knit</td>
+        <td>✅ Regula húmedo</td>
+        <td>La pieza más europea del set. Capa media + look noche.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+      <tr>
+        <td class="cell-id">OUT-02</td>
+        <td><span class="cell-brand">Portobello</span><span class="cell-name">Chamarra acolchada azul</span></td>
+        <td><span class="cdot" style="background:#2A3A6B;"></span>Azul marino + botones dorados</td>
+        <td>Nylon acolchado</td>
+        <td>⚡ Leve repelencia</td>
+        <td>Semiformal. Noches, restaurantes, museos. Look europeo.</td>
+        <td><span class="badge b-go">✓ Llevar</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- CALZADO + ACCESORIOS -->
+  <div class="section-label">Calzado y accesorios (5 prendas)</div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>ID</th><th>Prenda</th><th>Color</th><th>Uso</th><th>Función clave</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="cell-id">SHO-01</td>
+        <td><span class="cell-brand">—</span><span class="cell-name">Tenis blancos</span></td>
+        <td><span class="cdot" style="background:#F5F0E8;"></span>Blanco</td>
+        <td>Días secos, paleta clara</td>
+        <td>Combinación con khaki. NO usar en lluvia/barro.</td>
+      </tr>
+      <tr>
+        <td class="cell-id">SHO-02</td>
+        <td><span class="cell-brand">—</span><span class="cell-name">Tenis negros</span></td>
+        <td><span class="cdot" style="background:#1C1C1A;"></span>Negro</td>
+        <td>Lluvia, noche, caminata</td>
+        <td>Paleta oscura cohesiva. Noche con PNT-03 azul marino.</td>
+      </tr>
+      <tr>
+        <td class="cell-id">ACC-01</td>
+        <td><span class="cell-brand">—</span><span class="cell-name">Gorro café/beige</span></td>
+        <td><span class="cdot" style="background:#9A7B5A;"></span>Café/beige</td>
+        <td>Todos los días fríos</td>
+        <td>Combina con toda la paleta. Principal.</td>
+      </tr>
+      <tr>
+        <td class="cell-id">ACC-02</td>
+        <td><span class="cell-brand">—</span><span class="cell-name">Guantes negros</span></td>
+        <td><span class="cdot" style="background:#1C1C1A;"></span>Negro</td>
+        <td>Berlín / Praga (puede nevar)</td>
+        <td>Berlín puede estar a 2–4°C. Esencial primeros días.</td>
+      </tr>
+      <tr>
+        <td class="cell-id">ACC-03</td>
+        <td><span class="cell-brand">—</span><span class="cell-name">Gorro verde</span></td>
+        <td><span class="cdot" style="background:#2d5a3d;"></span>Verde</td>
+        <td>Variación estética</td>
+        <td>Segunda opción de gorro para variar look.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <!-- PALETA -->
+  <div class="section-label">Paleta de colores del wardrobe</div>
+  <div class="swatch-row">
+    <div class="swatch"><div class="swatch-dot" style="background:#1C1C1A;"></div>Negro</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#2A3A6B;"></div>Azul marino</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#B8B09A;"></div>Greige</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#E8DFD0;"></div>Oatmeal</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#F2EAD8;"></div>Crema</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#C4A97A;"></div>Khaki</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#8A9A7A;"></div>Sage/olivo</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#A8A8A8;"></div>Gris perla</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#2E7DD1;"></div>Azul eléctrico*</div>
+  </div>
+  <div class="callout callout-info" style="margin-top:10px; font-size:11px;">
+    *Azul eléctrico (Patagonia) es el único color de acento vivo del set — queda bien como contraste sobre neutros oscuros pero no intentes coordinar con otros azules. El resto de la paleta es perfectamente cohesiva para Europa: neutros cálidos + dark blues.
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 2: PLAN DÍA A DÍA
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-calendar">
+
+  <!-- BERLÍN -->
+  <div class="city-block">
+    <div class="city-header">
+      <div class="city-flag">🇩🇪</div>
+      <div>
+        <div class="city-name">Berlín</div>
+        <div class="city-dates">26–28 Marzo · 3 días · ~4–9°C, lluvia posible</div>
+      </div>
+      <div class="city-style-note">Berlín: capas funcionales, paleta oscura, técnico + knit. Nada excesivamente formal. El suéter tejido encaja perfecto.</div>
+    </div>
+    <div class="day-cards">
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">1</div>
+          <div><div class="day-date">Miércoles 26 Mar — Llegada + orientación</div><div class="day-scenario">Día de tránsito / primer recorrido Mitte</div></div>
+          <div class="day-temp">4–7°C · posible lluvia</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Base</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-08 manga larga técnica</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Capa media</div>
+            <div class="pill-row">
+              <span class="pill pill-l2">MID-02 suéter tejido</span>
+              <span class="pill pill-l3">OUT-04 Patagonia down</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Exterior + Pantalón + Calzado</div>
+            <div class="pill-row">
+              <span class="pill pill-l3">OUT-03 Gore-Tex</span>
+              <span class="pill">PNT-03 Eddie Bauer</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+              <span class="pill pill-acc">ACC-01 gorro + ACC-02 guantes</span>
+            </div>
+          </div>
+          <div class="day-note">Sistema completo de capas. Viaja puesto con el PNT-03 y el Patagonia — libera espacio en mochila. Gore-Tex encima si llueve al aterrizar.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">2</div>
+          <div><div class="day-date">Jueves 27 Mar — Museos + Muro de Berlín</div><div class="day-scenario">Día completo de caminata cultural</div></div>
+          <div class="day-temp">6–10°C · seco</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Base</div>
+            <div class="pill-row"><span class="pill pill-l1">TOP-05 TNF negro</span></div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Capas</div>
+            <div class="pill-row">
+              <span class="pill pill-l2">MID-02 suéter tejido</span>
+              <span class="pill pill-l3">OUT-02 chamarra acolchada</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Exterior + Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-03 Eddie Bauer</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+              <span class="pill pill-acc">ACC-01 gorro</span>
+            </div>
+          </div>
+          <div class="day-note">Paleta monocromática oscura: negro + azul marino + negro. Look berlinés por excelencia. Chamarra acolchada con botones dorados = touch europeo sobre look dark. Si entras a museo cálido, la chamarra queda sobre el brazo.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">3</div>
+          <div><div class="day-date">Viernes 28 Mar — Kreuzberg / Prenzlauer Berg + noche</div><div class="day-scenario">Barrios + café nocturno / bar</div></div>
+          <div class="day-temp">7–12°C · tarde/noche 5°C</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Base / Día</div>
+            <div class="pill-row"><span class="pill pill-l1">TOP-06 DKNY greige</span></div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Capas</div>
+            <div class="pill-row">
+              <span class="pill pill-l3">OUT-04 Patagonia</span>
+              <span class="pill pill-l3">OUT-03 Gore-Tex</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom + Noche</div>
+            <div class="pill-row">
+              <span class="pill">PNT-02 chino khaki</span>
+              <span class="pill pill-shoe">SHO-01 tenis blancos</span>
+              <span class="pill pill-acc">ACC-01 gorro</span>
+            </div>
+          </div>
+          <div class="day-note">Día: paleta más clara (greige + khaki + blanco). Noche en bar: quita Gore-Tex, queda Patagonia azul sobre greige — look limpio y colorido. Si el bar es más elegante, SHT-03 rayas sobre la camiseta funciona perfecto.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRAGA -->
+  <div class="city-block">
+    <div class="city-header">
+      <div class="city-flag">🇨🇿</div>
+      <div>
+        <div class="city-name">Praga</div>
+        <div class="city-dates">29–31 Marzo · 3 días · ~6–12°C, lluvia frecuente</div>
+      </div>
+      <div class="city-style-note">Praga: mezcla de colores oscuros y capas. Ciudad medieval — el suéter tejido y la camisa Oxford funcionan muy bien aquí.</div>
+    </div>
+    <div class="day-cards">
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">4</div>
+          <div><div class="day-date">Sábado 29 Mar — Llegada + Ciudad Vieja</div><div class="day-scenario">Caminata histórica, lluvia probable</div></div>
+          <div class="day-temp">6–9°C · lluvia</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Sistema lluvia completo</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-08 manga larga técnica</span>
+              <span class="pill pill-l2">MID-02 suéter tejido</span>
+              <span class="pill pill-l3">OUT-03 Gore-Tex</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom + Calzado</div>
+            <div class="pill-row">
+              <span class="pill">PNT-03 Eddie Bauer</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+              <span class="pill pill-acc">ACC-01 gorro</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Sistema térmico</div>
+            <div class="pill-row"><span class="pill pill-l3">OUT-04 Patagonia (dentro de mochila)</span></div>
+          </div>
+          <div class="day-note">El sistema más funcional del viaje. Manga larga técnica seca rápido bajo el suéter. Gore-Tex impermeabiliza todo. PNT-03 Eddie Bauer repele el agua en las piernas. El Patagonia guardado por si bajas mucho de temperatura.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">5</div>
+          <div><div class="day-date">Domingo 30 Mar — Castillo de Praga + Malá Strana</div><div class="day-scenario">Día largo de turismo clásico</div></div>
+          <div class="day-temp">8–13°C · nublado seco</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Base</div>
+            <div class="pill-row"><span class="pill pill-l1">SHT-03 camisa rayas grises</span></div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Capas</div>
+            <div class="pill-row">
+              <span class="pill pill-l2">MID-02 suéter tejido</span>
+              <span class="pill pill-l3">OUT-04 Patagonia down</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom + Calzado</div>
+            <div class="pill-row">
+              <span class="pill">PNT-03 Eddie Bauer</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+              <span class="pill pill-acc">ACC-01 gorro</span>
+            </div>
+          </div>
+          <div class="day-note">Camisa de rayas visible bajo el suéter tejido = layering europeo clásico. Rayas grises + oatmeal + azul marino + negro = paleta perfectamente cohesiva. Lleva el Gore-Tex en mochila por si acaso.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">6</div>
+          <div><div class="day-date">Lunes 31 Mar — Josefov + Vinohrady + noche</div><div class="day-scenario">Barrio judío + cena / restaurant</div></div>
+          <div class="day-temp">9–14°C · tarde soleada</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Look noche Praga</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-07 polo MK negro</span>
+              <span class="pill pill-l2">MID-02 suéter tejido encima</span>
+              <span class="pill pill-l3">OUT-02 chamarra acolchada</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-02 chino khaki</span>
+              <span class="pill pill-shoe">SHO-01 tenis blancos</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">En cena/restaurante</div>
+            <div class="pill-row">
+              <span class="pill">Quita chamarra → queda polo + suéter</span>
+            </div>
+          </div>
+          <div class="day-note">Outfit de noche más elegante hasta ahora. Polo MK con cuello + suéter tejido = look refinado europeo. La chamarra acolchada con botones dorados se queda en el perchero del restaurante y el look es completo. Paleta: negro + oatmeal + khaki + blanco.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VIENA -->
+  <div class="city-block">
+    <div class="city-header">
+      <div class="city-flag">🇦🇹</div>
+      <div>
+        <div class="city-name">Viena</div>
+        <div class="city-dates">1–3 Abril · 3 días · ~8–15°C, variable</div>
+      </div>
+      <div class="city-style-note">Viena: la ciudad más elegante del recorrido. Aquí la camisa Oxford y la chamarra acolchada son perfectas. Evita looks demasiado técnicos/deportivos.</div>
+    </div>
+    <div class="day-cards">
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">7</div>
+          <div><div class="day-date">Martes 1 Abr — Llegada + Innere Stadt</div><div class="day-scenario">Centro histórico, primer paseo</div></div>
+          <div class="day-temp">10–14°C · variable</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Look Viena día</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-04 KC crema</span>
+              <span class="pill pill-l2">MID-02 suéter tejido</span>
+              <span class="pill pill-l3">OUT-03 Gore-Tex</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-02 chino khaki</span>
+              <span class="pill pill-shoe">SHO-01 tenis blancos</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Accesorios</div>
+            <div class="pill-row">
+              <span class="pill pill-acc">ACC-01 gorro</span>
+            </div>
+          </div>
+          <div class="day-note">Paleta más clara para Viena: crema + oatmeal + khaki + blanco. Gore-Tex beige/sage integra bien con esta paleta, no es marcadamente "técnico". Viena aprecia looks cuidados — este es el más refinado sin ser formal.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">8</div>
+          <div><div class="day-date">Miércoles 2 Abr — Museos, Belvedere, Ringstraße</div><div class="day-scenario">Día cultural intenso</div></div>
+          <div class="day-temp">11–16°C · soleado</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Look museo Viena</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-06 DKNY greige</span>
+              <span class="pill pill-l3">OUT-04 Patagonia azul</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-03 Eddie Bauer azul</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Opcional tarde</div>
+            <div class="pill-row">
+              <span class="pill pill-l2">Quita Patagonia en interior del museo</span>
+            </div>
+          </div>
+          <div class="day-note">Soleado en Viena = el Patagonia puede ser la única capa exterior. Look limpio: greige + azul eléctrico (Patagonia) + azul marino (EB) + negro (zapatos). Patagonia comprime a bolsita para no cargar con él dentro del museo.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">9</div>
+          <div><div class="day-date">Jueves 3 Abr — Naschmarkt + noche elegante Viena</div><div class="day-scenario">Mercado de día · ópera / galería de noche</div></div>
+          <div class="day-temp">12–17°C día · 8°C noche</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Look noche Viena (más formal)</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">SHT-01 Oxford RL blanca ★★</span>
+              <span class="pill pill-l2">MID-02 suéter tejido encima</span>
+              <span class="pill pill-l3">OUT-02 chamarra acolchada</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-03 Eddie Bauer</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Día Naschmarkt</div>
+            <div class="pill-row">
+              <span class="pill">SHT-03 rayas + PNT-02 khaki + Gore-Tex</span>
+            </div>
+          </div>
+          <div class="day-note">El outfit más formal del viaje. Oxford RL blanca + suéter oatmeal + chamarra acolchada azul marino con dorado = aspecto de europeo sofisticado. Perfecto para Staatsoper, cena en restaurante con mantel, galería de arte.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BUDAPEST -->
+  <div class="city-block">
+    <div class="city-header">
+      <div class="city-flag">🇭🇺</div>
+      <div>
+        <div class="city-name">Budapest</div>
+        <div class="city-dates">3–7 Abril · ~4 días · ~10–18°C, primavera real</div>
+      </div>
+      <div class="city-style-note">Budapest: la ciudad más cálida del recorrido. Aquí puedes usar looks más ligeros. El khaki + tenis blancos funcionan muy bien con el calor primaveral.</div>
+    </div>
+    <div class="day-cards">
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">10</div>
+          <div><div class="day-date">Viernes 4 Abr — Buda: Castillo + Fishermen's Bastion</div><div class="day-scenario">Caminata subida al castillo</div></div>
+          <div class="day-temp">12–17°C · soleado</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Look activo Budapest</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-06 DKNY greige</span>
+              <span class="pill pill-l3">OUT-04 Patagonia (si fresco)</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-02 chino khaki</span>
+              <span class="pill pill-shoe">SHO-01 tenis blancos</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Seguridad lluvia</div>
+            <div class="pill-row">
+              <span class="pill pill-l3">OUT-03 Gore-Tex en mochila</span>
+            </div>
+          </div>
+          <div class="day-note">El día con más probabilidad de calor del viaje. Greige + khaki + blanco = paleta spring perfecta para Budapest. Patagonia comprimido en mochila por si refresca al atardecer. Si no lo usas, lo dejas en alojamiento.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">11</div>
+          <div><div class="day-date">Sábado 5 Abr — Pest: Gran Mercado + ruin bars</div><div class="day-scenario">Exploración barrios + noche Budapest</div></div>
+          <div class="day-temp">13–18°C día · 10°C noche</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Look día Budapest</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-05 TNF negro</span>
+              <span class="pill pill-l1">SHT-03 rayas (abierta como camisa exterior)</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Capas tarde</div>
+            <div class="pill-row">
+              <span class="pill pill-l3">OUT-02 chamarra acolchada</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-02 chino khaki</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+            </div>
+          </div>
+          <div class="day-note">Técnica avanzada: camisa de rayas abierta sobre camiseta negra = layering europeo moderno. Look muy urbano para los ruin bars de Budapest. La chamarra acolchada para la noche fría completa el outfit sin romper la estética.</div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">12</div>
+          <div><div class="day-date">Domingo 6 Abr — Baños termales + Margaret Island</div><div class="day-scenario">Día relajado + parque</div></div>
+          <div class="day-temp">14–19°C · soleado</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Look casual parque</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-04 KC crema</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Capa ligera</div>
+            <div class="pill-row">
+              <span class="pill pill-l3">OUT-04 Patagonia (atardecer)</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-02 chino khaki</span>
+              <span class="pill pill-shoe">SHO-01 tenis blancos</span>
+              <span class="pill pill-acc">ACC-01 gorro</span>
+            </div>
+          </div>
+          <div class="day-note">El día más primaveral del viaje. Crema + khaki + blanco = look completamente "European spring". Perfecto para fotos en el parque y paseos por el Danubio. Aprovecha para lavar las prendas más usadas esta noche.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LONDRES -->
+  <div class="city-block">
+    <div class="city-header">
+      <div class="city-flag">🇬🇧</div>
+      <div>
+        <div class="city-name">Londres</div>
+        <div class="city-dates">~24 horas · ~9–13°C, lluvia casi segura</div>
+      </div>
+      <div class="city-style-note">Londres: sistema completo de lluvia. Es el único día donde tienes 24h, así que haz que cuente. Notting Hill + South Bank son perfectos.</div>
+    </div>
+    <div class="day-cards">
+
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-num">13</div>
+          <div><div class="day-date">Londres Día — Notting Hill / Camden / South Bank</div><div class="day-scenario">Turismo intenso 24h</div></div>
+          <div class="day-temp">9–13°C · lluvia casi segura</div>
+        </div>
+        <div class="day-card-body">
+          <div class="outfit-section">
+            <div class="outfit-section-label">Sistema lluvia Londres</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">TOP-08 manga larga técnica</span>
+              <span class="pill pill-l3">OUT-04 Patagonia</span>
+              <span class="pill pill-l3">OUT-03 Gore-Tex encima</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Bottom</div>
+            <div class="pill-row">
+              <span class="pill">PNT-03 Eddie Bauer</span>
+              <span class="pill pill-shoe">SHO-02 tenis negros</span>
+              <span class="pill pill-acc">ACC-01 gorro</span>
+            </div>
+          </div>
+          <div class="outfit-section">
+            <div class="outfit-section-label">Noche / despedida</div>
+            <div class="pill-row">
+              <span class="pill pill-l1">SHT-01 Oxford RL</span>
+              <span class="pill pill-l2">MID-02 suéter</span>
+              <span class="pill">OUT-03 Gore-Tex</span>
+            </div>
+          </div>
+          <div class="day-note">Londres = lluvia garantizada. El sistema Gore-Tex + Patagonia + manga larga técnica es el más impermeabilizado de tu wardrobe. Para la noche o si vas a un pub especial, la Oxford RL + suéter tejido + Gore-Tex = look londinense auténtico. Último día del viaje.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="callout callout-warn">
+    <strong>💧 Nota lavado:</strong> A mitad del viaje (Budapest, día 5–6) es el momento ideal para lavar a mano en el lavabo del alojamiento: MID-02 suéter tejido (seca en 3–4h colgado), los tops de algodón (seca overnight), y la manga larga técnica (seca en 2h con ventilación). Los pantalones técnicos no necesitan lavarse — basta airearlos colgados durante la noche.
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 3: MATRIZ
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-matrix">
+
+  <div class="section-label">Tops × Pantalones — compatibilidad directa</div>
+  <div class="table-wrap" style="margin-bottom:20px;">
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Top / Pantalón</th>
+        <th>PNT-03 EB azul marino</th>
+        <th>PNT-02 khaki</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-head">TOP-04 KC crema</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓✓ ideal</td></tr>
+      <tr><td class="row-head">TOP-05 TNF negro</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓✓ ideal</td></tr>
+      <tr><td class="row-head">TOP-06 DKNY greige</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓✓ ideal</td></tr>
+      <tr><td class="row-head">TOP-07 MK polo negro</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓ bien</td></tr>
+      <tr><td class="row-head">TOP-08 manga larga sage</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓✓ ideal</td></tr>
+      <tr><td class="row-head">SHT-01 Oxford RL blanca</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓✓ ideal</td></tr>
+      <tr><td class="row-head">SHT-03 Levi's rayas grises</td><td class="cell-ok">✓✓ ideal</td><td class="cell-partial">⚠ cuidado tono</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="section-label">Outerwear × Contexto — cuándo usar cada capa</div>
+  <div class="table-wrap" style="margin-bottom:20px;">
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Capa / Situación</th>
+        <th>Lluvia intensa</th>
+        <th>Frío seco</th>
+        <th>Noche elegante</th>
+        <th>Caminata activa</th>
+        <th>Día soleado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-head">OUT-03 Gore-Tex</td><td class="cell-ok">★★ MVP</td><td class="cell-ok">✓ sirve</td><td class="cell-partial">⚠ técnico</td><td class="cell-ok">✓✓ ideal</td><td class="cell-partial">⚠ calor</td></tr>
+      <tr><td class="row-head">OUT-04 Patagonia down</td><td class="cell-partial">⚠ bajo Gore-Tex</td><td class="cell-ok">★★ MVP</td><td class="cell-partial">⚠ casual</td><td class="cell-ok">✓ quitarla interior</td><td class="cell-ok">✓ solo mañana</td></tr>
+      <tr><td class="row-head">MID-02 suéter tejido</td><td class="cell-ok">✓ bajo Gore-Tex</td><td class="cell-ok">✓✓ capa media</td><td class="cell-ok">★★ mejor look</td><td class="cell-partial">⚠ puede sudar</td><td class="cell-ok">✓ tarde/noche</td></tr>
+      <tr><td class="row-head">OUT-02 chamarra acolchada</td><td class="cell-partial">⚠ no WP</td><td class="cell-ok">✓ urbano</td><td class="cell-ok">★★ semiformal</td><td class="cell-partial">⚠ voluminosa</td><td class="cell-ok">✓ noche fría</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout callout-go">
+    <strong>Total de combinaciones del set:</strong> 7 tops × 2 pantalones = 14 looks base. Con 4 opciones de capa exterior = <strong>28+ outfits distintos</strong> para 14 días. No repites outfit completo ningún día del viaje.
+  </div>
+
+  <div class="section-label" style="margin-top:20px;">Zapatos × Condición — guía rápida</div>
+  <div class="table-wrap">
+  <table class="matrix-table">
+    <thead>
+      <tr><th style="text-align:left;">Zapato</th><th>Lluvia/barro</th><th>Caminata 15km+</th><th>Noche/bar</th><th>Museo/galería</th><th>Día soleado parque</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-head">SHO-01 Tenis blancos</td><td style="background:#fceaea;color:#7a1f1f;text-align:center;">✗ NO usar</td><td class="cell-partial">⚠ pueden mancharse</td><td class="cell-ok">✓ look limpio</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">★★ perfecto</td></tr>
+      <tr><td class="row-head">SHO-02 Tenis negros</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓✓ ideal</td><td class="cell-ok">✓ bien</td><td class="cell-ok">✓ bien</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 4: ESTILO EUROPEO
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-style">
+
+  <div class="callout callout-info" style="margin-bottom:20px;">
+    Basado en street style real de estas ciudades y tendencias 2025: los europeos en estas ciudades valoran <strong>el layering intencional, fits slim-to-regular (no baggy), y paletas neutras con un toque de acento</strong>. Tu wardrobe ya respeta estas reglas casi perfectamente.
+  </div>
+
+  <div class="grid-2">
+    <div class="style-card">
+      <div class="style-city">🇩🇪 Berlín — Dark functional</div>
+      <div class="style-desc">La ciudad más experimental pero con base muy funcional. El estilo berlinés combina prendas técnicas con capas estructuradas. Predominan los negros, grises y marrones. El knit sobre una base técnica es un look completamente válido aquí.</div>
+      <div class="style-rules">
+        <div class="style-rule">Paleta oscura es correcta — negro + azul marino + gris domina</div>
+        <div class="style-rule">Layering visible es un statement, no un descuido</div>
+        <div class="style-rule">El suéter tejido sobre camiseta = look reconocible como europeo</div>
+        <div class="style-rule">Sneakers minimalistas de cuero blanco son el calzado dominante en 2025</div>
+        <div class="style-rule">Evita logos grandes y colores muy brillantes/neón</div>
+      </div>
+      <div class="style-tip"><div class="style-tip-label">Tu mejor prenda aquí</div>MID-02 suéter tejido + OUT-02 chamarra dorada = look berlinés editado perfecto</div>
+    </div>
+
+    <div class="style-card">
+      <div class="style-city">🇨🇿 Praga — Refined layers</div>
+      <div class="style-desc">Praga tiene un estilo más conservador que Berlín pero más cuidado que otras ciudades del Este. Mezcla el casual centroeuropeo con toques de moda occidental. Las camisas de botones son muy comunes — tu SHT-01 y SHT-03 son perfectas aquí.</div>
+      <div class="style-rules">
+        <div class="style-rule">Camisas de botones sobre camisetas = look local muy común</div>
+        <div class="style-rule">Chinos tapered (como tu PNT-02) son muy corrientes</div>
+        <div class="style-rule">Colores tierra y neutros dominan — tu paleta encaja a la perfección</div>
+        <div class="style-rule">Las marcas de outdoor (North Face, Patagonia) son aceptadas como moda</div>
+        <div class="style-rule">Las noches en Praga son casuales — no necesitas vestirte de forma especial</div>
+      </div>
+      <div class="style-tip"><div class="style-tip-label">Tu mejor prenda aquí</div>SHT-03 rayas Levi's abierta como overshirt sobre TOP-05 negro = look local auténtico</div>
+    </div>
+
+    <div class="style-card">
+      <div class="style-city">🇦🇹 Viena — Elevated smart casual</div>
+      <div class="style-desc">Viena es la ciudad más formal del recorrido. Los vieneses se visten con más cuidado que el resto de Europa Central. Aquí el fit importa más, las prendas limpias son esenciales, y un toque de formalidad siempre suma. Tu SHT-01 Oxford RL es la prenda perfecta para esta ciudad.</div>
+      <div class="style-rules">
+        <div class="style-rule">Los fits slim son la norma — tu TOP-04, TOP-06 y SHT-01 son ideales</div>
+        <div class="style-rule">Colores neutros cálidos (crema, beige, oatmeal) = look vienés clásico</div>
+        <div class="style-rule">El suéter de punto fino encima de una camisa = look refinado local</div>
+        <div class="style-rule">Para lugares formales (ópera, restaurantes): camisa con cuello siempre</div>
+        <div class="style-rule">Zapatos limpios importan más aquí que en Berlín</div>
+      </div>
+      <div class="style-tip"><div class="style-tip-label">Tu mejor prenda aquí</div>SHT-01 Oxford RL blanca + MID-02 suéter oatmeal + OUT-02 chamarra acolchada = el look más "vienés" posible con tu set</div>
+    </div>
+
+    <div class="style-card">
+      <div class="style-city">🇭🇺 Budapest — Relaxed urban</div>
+      <div class="style-desc">Budapest es la ciudad más relajada estilísticamente del recorrido. El clima más cálido de abril invita a looks más ligeros. Los jóvenes budapestenses mezclan sporty con casual sin preocuparse demasiado. Aquí puedes sacar los tenis blancos sin miedo y usar tu wardrobe más liviano.</div>
+      <div class="style-rules">
+        <div class="style-rule">Looks más ligeros — una sola capa es aceptable en días templados</div>
+        <div class="style-rule">Tenis blancos son muy populares aquí, especialmente con chinos</div>
+        <div class="style-rule">Paletas claras (crema + khaki + blanco) = look "spring Budapest"</div>
+        <div class="style-rule">Los ruin bars tienen dress code muy casual — cualquier outfit sirve</div>
+        <div class="style-rule">La camisa exterior abierta sobre camiseta es un look muy local</div>
+      </div>
+      <div class="style-tip"><div class="style-tip-label">Tu mejor prenda aquí</div>TOP-04 crema + PNT-02 khaki + SHO-01 blancos = el look más "Budapest spring" posible</div>
+    </div>
+  </div>
+
+  <div class="style-card" style="margin-top:4px;">
+    <div class="style-city">🇬🇧 Londres — Considered streetwear</div>
+    <div class="style-desc">Londres en 2025 es la capital mundial del streetwear considerado. GATs (German Army Trainers), overshirts, knits de calidad y layering técnico son el lenguaje dominante. El outerwear técnico (Gore-Tex, Patagonia) es completamente mainstream — nadie te verá como "turista con chamarra de camping". Tu wardrobe habla fluido londinense.</div>
+    <div class="style-rules">
+      <div class="style-rule">Outerwear técnico de calidad (Gore-Tex, Patagonia) es streetwear legítimo en Londres 2025</div>
+      <div class="style-rule">Layering intencional — que se vea que hay capa bajo capa, es statement</div>
+      <div class="style-rule">Sneakers blancos minimalistas son el calzado dominante en la ciudad</div>
+      <div class="style-rule">En los 24h que tienes: mezcla funcional (día) + más cuidado (tarde/noche)</div>
+      <div class="style-rule">Los pubs londinenses no tienen dress code — va cualquier look del set</div>
+    </div>
+    <div class="style-tip"><div class="style-tip-label">Tu mejor prenda aquí</div>TOP-08 manga larga técnica + OUT-04 Patagonia + OUT-03 Gore-Tex = look funcional que en Londres se lee como streetwear técnico, no como turista</div>
+  </div>
+
+  <div class="callout callout-go" style="margin-top:16px;">
+    <strong>Conclusión estilo:</strong> Tu wardrobe ya está calibrado para Europa. Paleta de neutros cálidos + azul marino, layering visible, y prendas con fit slim-regular es exactamente lo que se usa en estas cinco ciudades en primavera 2025. El único ajuste: en Viena sé más consciente del fit y la limpieza de las prendas, y aprovecha la Oxford RL para noches más elegantes.
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     TAB 5: PACKING FINAL
+═══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-packing">
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num">14</div><div class="stat-lbl">Prendas totales</div></div>
+    <div class="stat-card"><div class="stat-num">~22L</div><div class="stat-lbl">Ropa en mochila</div></div>
+    <div class="stat-card"><div class="stat-num">~16L</div><div class="stat-lbl">Libre (compras)</div></div>
+    <div class="stat-card"><div class="stat-num">38L</div><div class="stat-lbl">Mochila total</div></div>
+    <div class="stat-card"><div class="stat-num">0</div><div class="stat-lbl">Prendas repetidas</div></div>
+  </div>
+
+  <div class="grid-2">
+
+    <div>
+      <div class="pack-section">
+        <div class="pack-section-head">
+          <div class="pack-section-title">Tops y camisetas</div>
+          <div class="pack-section-count">5 prendas</div>
+        </div>
+        <div class="pack-item"><div class="pack-item-id">TOP-04</div><div class="pack-item-name">Kenneth Cole crema slim</div><div class="pack-item-note">base limpia</div></div>
+        <div class="pack-item"><div class="pack-item-id">TOP-05</div><div class="pack-item-name">TNF negro gráfico</div><div class="pack-item-note">máxima versatilidad</div></div>
+        <div class="pack-item"><div class="pack-item-id">TOP-06</div><div class="pack-item-name">DKNY greige slim</div><div class="pack-item-note">neutro europeo</div></div>
+        <div class="pack-item"><div class="pack-item-id">TOP-07</div><div class="pack-item-name">MK polo knit negro <span class="pack-star">★</span></div><div class="pack-item-note">MVP noche</div></div>
+        <div class="pack-item"><div class="pack-item-id">TOP-08</div><div class="pack-item-name">Manga larga técnica sage <span class="pack-star">★</span></div><div class="pack-item-note">MVP lluvia base</div></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-head">
+          <div class="pack-section-title">Camisas de botones</div>
+          <div class="pack-section-count">2 prendas</div>
+        </div>
+        <div class="pack-item"><div class="pack-item-id">SHT-01</div><div class="pack-item-name">Ralph Lauren Oxford blanca <span class="pack-star">★★</span></div><div class="pack-item-note">más formal del viaje</div></div>
+        <div class="pack-item"><div class="pack-item-id">SHT-03</div><div class="pack-item-name">Levi's rayas grises <span class="pack-star">★</span></div><div class="pack-item-note">overshirt + camisa</div></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-head">
+          <div class="pack-section-title">Pantalones</div>
+          <div class="pack-section-count">2 prendas</div>
+        </div>
+        <div class="pack-item"><div class="pack-item-id">PNT-03</div><div class="pack-item-name">Eddie Bauer técnico azul <span class="pack-star">★★</span></div><div class="pack-item-note">viajar puesto</div></div>
+        <div class="pack-item"><div class="pack-item-id">PNT-02</div><div class="pack-item-name">Chino jogger khaki</div><div class="pack-item-note">comodidad + estilo</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="pack-section">
+        <div class="pack-section-head">
+          <div class="pack-section-title">Capas y outerwear</div>
+          <div class="pack-section-count">4 prendas</div>
+        </div>
+        <div class="pack-item"><div class="pack-item-id">OUT-03</div><div class="pack-item-name">Gore-Tex beige/sage <span class="pack-star">★★</span></div><div class="pack-item-note">MVP absoluto — siempre</div></div>
+        <div class="pack-item"><div class="pack-item-id">OUT-04</div><div class="pack-item-name">Patagonia Down azul <span class="pack-star">★★</span></div><div class="pack-item-note">comprime a bolsita</div></div>
+        <div class="pack-item"><div class="pack-item-id">MID-02</div><div class="pack-item-name">Suéter tejido oatmeal <span class="pack-star">★</span></div><div class="pack-item-note">la prenda más europea</div></div>
+        <div class="pack-item"><div class="pack-item-id">OUT-02</div><div class="pack-item-name">Chamarra acolchada azul marino</div><div class="pack-item-note">noches + formal</div></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-head">
+          <div class="pack-section-title">Calzado</div>
+          <div class="pack-section-count">2 pares</div>
+        </div>
+        <div class="pack-item"><div class="pack-item-id">SHO-01</div><div class="pack-item-name">Tenis blancos</div><div class="pack-item-note">días secos / Budapest</div></div>
+        <div class="pack-item"><div class="pack-item-id">SHO-02</div><div class="pack-item-name">Tenis negros</div><div class="pack-item-note">lluvia + noche</div></div>
+      </div>
+
+      <div class="pack-section">
+        <div class="pack-section-head">
+          <div class="pack-section-title">Accesorios</div>
+          <div class="pack-section-count">3 piezas</div>
+        </div>
+        <div class="pack-item"><div class="pack-item-id">ACC-01</div><div class="pack-item-name">Gorro café/beige <span class="pack-star">★</span></div><div class="pack-item-note">combina con todo</div></div>
+        <div class="pack-item"><div class="pack-item-id">ACC-02</div><div class="pack-item-name">Guantes negros</div><div class="pack-item-note">Berlín / Praga (puede nevar)</div></div>
+        <div class="pack-item"><div class="pack-item-id">ACC-03</div><div class="pack-item-name">Gorro verde</div><div class="pack-item-note">variación estética</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout callout-go" style="margin-top:4px;">
+    <strong>Estrategia de empaque:</strong> Vuela puesto el PNT-03 Eddie Bauer + OUT-04 Patagonia (comprímelo en el bolsillo cuando estés en el avión) + SHO-02 tenis negros. Esto libera ~4L adicionales en la mochila. Todo lo demás va dentro. El Gore-Tex va en el top de la mochila para acceso inmediato si llueve al llegar a Berlín.
+  </div>
+
+  <div class="callout callout-warn" style="margin-top:8px;">
+    <strong>Quedaron en casa:</strong> TOP-01 Columbia sage, TOP-02 Rayo blanco, TOP-03 Vans verde, TOP-09 Lacoste polo manga larga, SHT-02 gingham azul, PNT-01 Levi's 505, PNT-04 CAT cargo, MID-01 TNF hoodie camel, MID-03 Quarter-zip Nautica, OUT-01 Nautica softshell.
+  </div>
+
+</div>
+
+</div>
+
+
+<script>
+// Register inline service worker for offline support
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(
+        caches.open('wardrobe-v1').then(cache =>
+          cache.match(e.request).then(cached => {
+            const fresh = fetch(e.request).then(r => { cache.put(e.request, r.clone()); return r; }).catch(() => cached);
+            return cached || fresh;
+          })
+        )
+      );
+    });
+  `;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+
+</body>
+</html>
